@@ -453,11 +453,9 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 				err := conn.WriteMessage(websocket.TextMessage, broadcast)
 				if err != nil {
 					log.Println("Error writing to WebSocket:", err)
-					return // Exit the goroutine if an error occurs
 				}
 			case <-CloseSocketchannel:
 				log.Println("WebSocket shut down")
-				conn.Close() // Close the WebSocket
 				return // Exit the goroutine if CloseSocketchannel is closed
 			}
 		}
