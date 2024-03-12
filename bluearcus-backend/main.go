@@ -97,7 +97,7 @@ func main() {
 
 	// Wait for SIGINT (Ctrl+C) signal
 	<-interrupt
-	CloseSocketchannel <- true
+	close(CloseSocketchannel)
 	// Create a context with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -442,7 +442,6 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Could not upgrade connection to WebSocket", http.StatusBadRequest)
 		return
 	}
-	defer conn.Close() // Close the WebSocket connection when the function returns
 
 	// Handle WebSocket messages
 	go func() {
@@ -457,9 +456,8 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 					return // Exit the goroutine if an error occurs
 				}
 			case <-CloseSocketchannel:
-				close(Socketchannel)
-				close(CloseSocketchannel)
 				log.Println("WebSocket shut down")
+				conn.Close() // Close the WebSocket
 				return // Exit the goroutine if CloseSocketchannel is closed
 			}
 		}
