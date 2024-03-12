@@ -1,0 +1,3 @@
+[submodule "bluearcus-frontend"]
+    path = bluearcus-frontend
+    url = https://github.com/pkprajapatms/bluearcus-frontend.git
